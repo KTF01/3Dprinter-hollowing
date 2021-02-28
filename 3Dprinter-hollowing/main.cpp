@@ -36,7 +36,7 @@ int main()
 		for (int j = 0; j < rabbit->faces.size(); j++)
 		{
 			float triverts[3][3] = { 
-				{rabbit->vertices[rabbit->faces[j].x-1].x, rabbit->vertices[rabbit->faces[j].x-1].y, rabbit->faces[rabbit->faces[j].x-1].z},
+				{rabbit->vertices[rabbit->faces[j].x-1].x, rabbit->vertices[rabbit->faces[j].x-1].y, rabbit->vertices[rabbit->faces[j].x-1].z},
 
 				{rabbit->vertices[rabbit->faces[j].y-1].x, rabbit->vertices[rabbit->faces[j].y-1].y, rabbit->vertices[rabbit->faces[j].y-1].z},
 
