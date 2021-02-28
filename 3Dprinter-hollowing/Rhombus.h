@@ -15,7 +15,7 @@ public:
 	bool isleaf = true;
 private:
 	inline void addIndexes() {
-		addIndex(1); addIndex(2); addIndex(4);
-		addIndex(3); addIndex(4); addIndex(2);
+		addIndex({1,2,4});
+		addIndex({3,4,2});
 	}
 };

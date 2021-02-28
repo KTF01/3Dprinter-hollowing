@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include "glm/glm.hpp"
+
+typedef glm::vec<3, unsigned int, glm::defaultp> Face;
+
 class Mesh
 {
 public:
@@ -8,10 +11,10 @@ public:
 	void addVertex(const glm::vec3& vertex) {
 		vertices.push_back(vertex);
 	}
-	void addIndex(unsigned int index) {
-		indices.push_back(index);
+	void addIndex(Face face) {
+		faces.push_back(face);
 	}
-	std::vector<unsigned int> indices;
+	std::vector<Face> faces;
 	std::vector<glm::vec3> vertices;
 	glm::vec3 center = glm::vec3(0);
 	float aabbX = 0, aabbY = 0, aabbZ = 0;

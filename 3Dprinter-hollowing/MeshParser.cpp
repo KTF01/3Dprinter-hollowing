@@ -44,13 +44,16 @@ bool MeshParser::processLine()
 		updateMinMaxValues(x,y,z);
 	}
 	else if ("f" == line_id) {
-		unsigned int iPosition = 0, iTexCoord = 0, iNormal = 0;
-
-		for (unsigned int iFace = 0; iFace < 3; iFace++)
-		{
-			ifs >> iPosition;
-			mesh->addIndex(iPosition);
-		}
+		unsigned int iPosition0 = 0;//, iTexCoord = 0, iNormal = 0;
+		unsigned int iPosition1 = 0;
+		unsigned int iPosition2 = 0;
+		//for (unsigned int iFace = 0; iFace < 3; iFace++)
+		//{
+			ifs >> iPosition0;
+			ifs >> iPosition1;
+			ifs >> iPosition2;
+			mesh->addIndex({iPosition0, iPosition1, iPosition2});
+		//}
 	}
 	else
 		skipLine();
@@ -77,10 +80,10 @@ void MeshParser::exportMesh(const Mesh& mesh, const char* filename) {
 
 		ofs.write(line.c_str(), strlen(line.c_str()));
 	}
-	for (size_t i = 0; i < mesh.indices.size(); i+=3)
+	for (size_t i = 0; i < mesh.faces.size(); i++)
 	{
-		std::string line = "f " + std::to_string(mesh.indices.at(i)) + " "
-			+ std::to_string(mesh.indices.at(i+1)) + " " + std::to_string(mesh.indices.at(i+2)) + "\n";
+		std::string line = "f " + std::to_string(mesh.faces.at(i)[0]) + " "
+			+ std::to_string(mesh.faces.at(i)[1]) + " " + std::to_string(mesh.faces.at(i)[2]) + "\n";
 
 		ofs.write(line.c_str(), strlen(line.c_str()));
 	}

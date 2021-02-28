@@ -141,7 +141,10 @@ int planeBoxOverlap(float normal[3], float vert[3], float maxbox[3])	// -NJMP-
 //rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
 //if (min > rad || max < -rad) return 0;
 
-
+float myAbs(float a) {
+	if (a >= 0) return a;
+	else return -a;
+}
 
 int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3])
 {
@@ -172,9 +175,9 @@ int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]
 
 	/* Bullet 3:  */
 	/*  test the 9 tests first (this was faster) */
-	fex = fabsf(e0[X]);
-	fey = fabsf(e0[Y]);
-	fez = fabsf(e0[Z]);
+	fex = myAbs(e0[X]);
+	fey = myAbs(e0[Y]);
+	fez = myAbs(e0[Z]);
 
 	//AXISTEST_X01(e0[Z], e0[Y], fez, fey);
 	p0 = e0[Z] * v0[Y] - e0[Y] * v0[Z];
@@ -200,9 +203,9 @@ int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]
 	rad = fey * boxhalfsize[X] + fex * boxhalfsize[Y];
 	if (min > rad || max < -rad) return 0;
 
-	fex = fabsf(e1[X]);
-	fey = fabsf(e1[Y]);
-	fez = fabsf(e1[Z]);
+	fex = myAbs(e1[X]);
+	fey = myAbs(e1[Y]);
+	fez = myAbs(e1[Z]);
 
 	//AXISTEST_X01(e1[Z], e1[Y], fez, fey);
 	p0 = e1[Z] * v0[Y] - e1[Y] * v0[Z];
@@ -228,9 +231,9 @@ int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]
 	rad = fey * boxhalfsize[X] + fex * boxhalfsize[Y];   
 	if (min > rad || max < -rad) return 0;
 
-	fex = fabsf(e2[X]);
-	fey = fabsf(e2[Y]);
-	fez = fabsf(e2[Z]);
+	fex = myAbs(e2[X]);
+	fey = myAbs(e2[Y]);
+	fez = myAbs(e2[Z]);
 
 	//AXISTEST_X2(e2[Z], e2[Y], fez, fey);
 	p0 = e2[Z] * v0[Y] - e2[Y] * v0[Z];

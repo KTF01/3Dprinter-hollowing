@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <amp.h>
 #include "glm/glm.hpp"
 #include "MeshParser.h"
 #include "Rhombus.h"
@@ -12,29 +13,34 @@ Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg);
 
 int main()
 {
-	Mesh* rabbit = MeshParser::parse("objs/bunny.obj");
+	Mesh* rabbit = MeshParser::parse("objs/abstract.obj");
 	std::cout << rabbit->center.x << " " << rabbit->center.y<<" " << rabbit->center.z << std::endl;
-	Rhombus* root = new Rhombus(0.5f,0.2f, rabbit->center);
+	Rhombus* root = new Rhombus(5,2, rabbit->center);
 
 	RhombusGrid rg(*root);
 	rg.subDivide();
 	rg.subDivide();
 	rg.subDivide();
 	rg.subDivide();
+
+
 	for (int i = 0; i < rg.rhombuses.size(); i++)
 	{
 		Rhombus* r = &rg.rhombuses[i];
 		float boxCenter[3] = { r->center.x, r->center.y, r->center.z };
 		float boxH[3] = { r->width / 2.0f, r->height / 2.0f, 0 };
 		int counter = 0;
-		for (int j = 0; j < rabbit->indices.size(); j+=3)
+
+		//concurrency::array_view<Face, 1> f(rabbit->faces.size(), rabbit->faces);
+
+		for (int j = 0; j < rabbit->faces.size(); j++)
 		{
 			float triverts[3][3] = { 
-				{rabbit->vertices[rabbit->indices[j]-1].x,rabbit->vertices[rabbit->indices[j]-1].y,rabbit->vertices[rabbit->indices[j]-1].z},
+				{rabbit->vertices[rabbit->faces[j].x-1].x, rabbit->vertices[rabbit->faces[j].x-1].y, rabbit->faces[rabbit->faces[j].x-1].z},
 
-				{rabbit->vertices[rabbit->indices[j + 1]-1].x,rabbit->vertices[rabbit->indices[j + 1]-1].y,rabbit->vertices[rabbit->indices[j + 1]-1].z},
+				{rabbit->vertices[rabbit->faces[j].y-1].x, rabbit->vertices[rabbit->faces[j].y-1].y, rabbit->vertices[rabbit->faces[j].y-1].z},
 
-				{rabbit->vertices[rabbit->indices[j + 2]-1].x,rabbit->vertices[rabbit->indices[j + 2]-1].y,rabbit->vertices[rabbit->indices[j + 2]-1].z}
+				{rabbit->vertices[rabbit->faces[j].z-1].x, rabbit->vertices[rabbit->faces[j].z-1].y, rabbit->vertices[rabbit->faces[j].z-1].z}
 			};
 
 			int x = triBoxOverlap(boxCenter, boxH, triverts);
@@ -43,9 +49,9 @@ int main()
 				//r->center += glm::vec3(0,0,1);
 				break;
 			}
-			else if(j==rabbit->indices.size()-3){
-				rg.removeRhombus(*r);
-			}
+		}
+		if (counter == 0) {
+			rg.removeRhombus(*r);
 		}
 		
 	}
@@ -55,7 +61,7 @@ int main()
 	}
 	
 
-	MeshParser::exportMesh(*rabbit,"objs/output/test.obj");
+	MeshParser::exportMesh(*rabbit,"objs/output/test2.obj");
 	return 0;
 }
 
@@ -76,9 +82,9 @@ Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg) {
 }
 
 void mergeMeshes(Mesh* mesh1, Mesh* mesh2) {
-	for (unsigned int i = 0; i < mesh2->indices.size(); i++)
+	for (unsigned int i = 0; i < mesh2->faces.size(); i++)
 	{
-		mesh1->addIndex(mesh2->indices[i]+mesh1->vertices.size());
+		mesh1->addIndex(mesh2->faces[i]+mesh1->vertices.size());
 	}
 	
 	for (unsigned int i = 0; i < mesh2->vertices.size(); i++)
