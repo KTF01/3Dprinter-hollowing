@@ -146,10 +146,13 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxTriOverlap.h" />
     <ClInclude Include="Rhombus.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshParser.h" />
     <ClInclude Include="RhombusGrid.h" />
+    <ClInclude Include="Voxel.h" />
+    <ClInclude Include="VoxelGrid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

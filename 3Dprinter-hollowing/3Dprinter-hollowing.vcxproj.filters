@@ -44,5 +44,14 @@
     <ClInclude Include="RhombusGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Voxel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxTriOverlap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

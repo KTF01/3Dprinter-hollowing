@@ -18,9 +18,12 @@ Mesh* MeshParser::parse(const char* fileName)
 	}
 	theParser.ifs.close();
 
-	theParser.mesh->center = glm::vec3((theParser.maxx + theParser.minx)/2.0f, 
+	theParser.mesh->center = glm::vec3(	(theParser.maxx + theParser.minx)/2.0f, 
 										(theParser.maxy + theParser.miny) / 2.0f,
 										(theParser.maxz + theParser.minz) / 2.0f);
+	theParser.mesh->aabbX = theParser.maxx - theParser.mesh->center.x;
+	theParser.mesh->aabbY = theParser.maxy - theParser.mesh->center.y;
+	theParser.mesh->aabbZ = theParser.maxz - theParser.mesh->center.z;
 
 	//theParser.mesh->initBuffers();
 
@@ -55,13 +58,13 @@ bool MeshParser::processLine()
 }
 
 void MeshParser:: updateMinMaxValues(float x, float y, float z) {
-		if (x < minx || firstVertex) minx = x;
-		if (x > maxx || firstVertex) maxx = x;
-		if (y < miny || firstVertex) miny = y;
-		if (y > maxy || firstVertex) maxy = y;
-		if (z < minz || firstVertex) minz = z;
-		if (z > maxz || firstVertex) maxz = z;
-		if (firstVertex) firstVertex = false;
+	if (x < minx || firstVertex) minx = x;
+	if (x > maxx || firstVertex) maxx = x;
+	if (y < miny || firstVertex) miny = y;
+	if (y > maxy || firstVertex) maxy = y;
+	if (z < minz || firstVertex) minz = z;
+	if (z > maxz || firstVertex) maxz = z;
+	if (firstVertex) firstVertex = false;
 
 }
 void MeshParser::exportMesh(const Mesh& mesh, const char* filename) {
@@ -69,7 +72,6 @@ void MeshParser::exportMesh(const Mesh& mesh, const char* filename) {
 	ofs.open(filename);
 	for (size_t i = 0; i < mesh.vertices.size(); i++)
 	{
-		std::string v= "v ";
 		std::string line = "v " + std::to_string(mesh.vertices.at(i).x)+" "
 			+ std::to_string(mesh.vertices.at(i).y)+" "+std::to_string(mesh.vertices.at(i).z)+"\n";
 

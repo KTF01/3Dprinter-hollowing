@@ -11,6 +11,6 @@ public:
 	void subDivide();
 	std::vector<Rhombus> rhombuses;
 	Rhombus* root;
-
+	void removeRhombus(Rhombus &r);
 };
 
