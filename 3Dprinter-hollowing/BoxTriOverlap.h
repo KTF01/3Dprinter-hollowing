@@ -22,7 +22,7 @@ const int X = 0;
 const int Y = 1;
 const int Z = 2;
 
-void CROSS(float dest[3], float v1[3], float v2[3]) {
+void CROSS(float dest[3], float v1[3], float v2[3]) restrict (amp){
 	dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
@@ -30,14 +30,14 @@ void CROSS(float dest[3], float v1[3], float v2[3]) {
 
 #define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
 
-void SUB(float dest[3], float v1[3], float v2[3]) {
+void SUB(float dest[3], float v1[3], float v2[3])restrict(amp) {
 	dest[0] = v1[0] - v2[0]; 
 	dest[1] = v1[1] - v2[1]; 
 	dest[2] = v1[2] - v2[2];
 }
 
 
-void FINDMINMAX(float x0, float x1, float x2, float &min, float &max) {
+void FINDMINMAX(float x0, float x1, float x2, float &min, float &max)restrict(amp) {
 	min = max = x0;   
 	if (x1 < min) min = x1; 
 	if (x1 > max) max = x1; 
@@ -45,7 +45,7 @@ void FINDMINMAX(float x0, float x1, float x2, float &min, float &max) {
 	if (x2 > max) max = x2;
 }
 
-int planeBoxOverlap(float normal[3], float vert[3], float maxbox[3])	// -NJMP-
+int planeBoxOverlap(float normal[3], float vert[3], float maxbox[3])restrict(amp)	// -NJMP-
 
 {
 	int q;
@@ -141,12 +141,13 @@ int planeBoxOverlap(float normal[3], float vert[3], float maxbox[3])	// -NJMP-
 //rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
 //if (min > rad || max < -rad) return 0;
 
-float myAbs(float a) {
+float myAbs(float a)restrict(amp)
+{
 	if (a >= 0) return a;
 	else return -a;
 }
 
-int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3])
+int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]) restrict (amp)
 {
 	/*    use separating axis theorem to test overlap between triangle and box */
 	/*    need to test for overlap in these directions: */

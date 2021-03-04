@@ -12,7 +12,7 @@ public:
 	}
 	float height;
 	float width;
-	bool isleaf = true;
+	bool isBound = true;
 private:
 	inline void addIndexes() {
 		addIndex({1,2,4});
