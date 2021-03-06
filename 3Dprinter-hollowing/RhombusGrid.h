@@ -7,7 +7,7 @@ class RhombusGrid
 {
 public:
 	RhombusGrid(Rhombus& rootRhombus);
-	void splitRhombus(Rhombus* rhombus, std::vector<Rhombus> &tmp);
+	std::vector<Rhombus> splitRhombus(Rhombus* rhombus/*, std::vector<Rhombus> &tmp*/);
 	void subDivide();
 	std::vector<Rhombus> rhombuses;
 	Rhombus* root;

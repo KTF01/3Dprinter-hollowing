@@ -12,7 +12,7 @@ public:
 	}
 	float height;
 	float width;
-	bool isBound = true;
+	bool isBound = false;
 private:
 	inline void addIndexes() {
 		addIndex({1,2,4});
