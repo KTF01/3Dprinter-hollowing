@@ -93,7 +93,7 @@ int main()
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGrid &rg) {
 	std::vector<Rhombus> finalGrid;
 	float rabbitHeight = 2*abs(rabbit->aabbY - rabbit->center.y);
-	if (r->height < rabbitHeight/2.0f) {
+	if (r->height < rabbitHeight/4.0f) {
 		if (!isRhombusIntersect(r, rabbit)) {
 			rg.removeRhombus(*r);
 		}
