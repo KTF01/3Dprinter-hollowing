@@ -22,7 +22,7 @@ const int X = 0;
 const int Y = 1;
 const int Z = 2;
 
-void CROSS(float dest[3], float v1[3], float v2[3]) restrict (amp){
+void CROSS(double dest[3], double v1[3], double v2[3]) restrict (amp){
 	dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
 	dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
 	dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
@@ -30,14 +30,14 @@ void CROSS(float dest[3], float v1[3], float v2[3]) restrict (amp){
 
 #define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
 
-void SUB(float dest[3], float v1[3], float v2[3])restrict(amp) {
+void SUB(double dest[3], double v1[3], double v2[3])restrict(amp) {
 	dest[0] = v1[0] - v2[0]; 
 	dest[1] = v1[1] - v2[1]; 
 	dest[2] = v1[2] - v2[2];
 }
 
 
-void FINDMINMAX(float x0, float x1, float x2, float &min, float &max)restrict(amp) {
+void FINDMINMAX(double x0, double x1, double x2, double&min, double&max)restrict(amp) {
 	min = max = x0;   
 	if (x1 < min) min = x1; 
 	if (x1 > max) max = x1; 
@@ -45,11 +45,11 @@ void FINDMINMAX(float x0, float x1, float x2, float &min, float &max)restrict(am
 	if (x2 > max) max = x2;
 }
 
-int planeBoxOverlap(float normal[3], float vert[3], float maxbox[3])restrict(amp)	// -NJMP-
+int planeBoxOverlap(double normal[3], double vert[3], double maxbox[3])restrict(amp)	// -NJMP-
 
 {
 	int q;
-	float vmin[3], vmax[3], v;
+	double vmin[3], vmax[3], v;
 
 	for (q = X; q <= Z; q++)
 	{
@@ -147,7 +147,7 @@ float myAbs(float a)restrict(amp)
 	else return -a;
 }
 
-int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]) restrict (amp)
+int triBoxOverlap(double boxcenter[3], double boxhalfsize[3], double triverts[3][3]) restrict (amp)
 {
 	/*    use separating axis theorem to test overlap between triangle and box */
 	/*    need to test for overlap in these directions: */
@@ -156,11 +156,11 @@ int triBoxOverlap(float boxcenter[3], float boxhalfsize[3], float triverts[3][3]
 	/*    2) normal of the triangle */
 	/*    3) crossproduct(edge from tri, {x,y,z}-directin) */
 	/*       this gives 3x3=9 more tests */
-	float v0[3], v1[3], v2[3];
+	double v0[3], v1[3], v2[3];
 
 	//   float axis[3];
-	float min, max, p0, p1, p2, rad, fex, fey, fez;		// -NJMP- "d" local variable removed
-	float normal[3], e0[3], e1[3], e2[3];
+	double min, max, p0, p1, p2, rad, fex, fey, fez;		// -NJMP- "d" local variable removed
+	double normal[3], e0[3], e1[3], e2[3];
 
 
 	/* This is the fastest branch on Sun */

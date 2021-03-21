@@ -32,7 +32,7 @@ Mesh* MeshParser::parse(const char* fileName)
 bool MeshParser::processLine()
 {
 	std::string line_id;
-	float x, y, z;
+	double x, y, z;
 
 	if (!(ifs >> line_id))
 		return false;
@@ -40,7 +40,7 @@ bool MeshParser::processLine()
 	if ("v" == line_id) {	//	vertex data
 		ifs >> x >> y >> z;
 		positions.push_back(glm::vec3(x, y, z));
-		mesh->addVertex(glm::vec3(x, y, z));
+		mesh->addVertex(glm::vec<3, double>(x, y, z));
 		updateMinMaxValues(x,y,z);
 	}
 	else if ("f" == line_id) {
@@ -60,7 +60,7 @@ bool MeshParser::processLine()
 	return true;
 }
 
-void MeshParser:: updateMinMaxValues(float x, float y, float z) {
+void MeshParser:: updateMinMaxValues(double x, double y, double z) {
 	if (x < minx || firstVertex) minx = x;
 	if (x > maxx || firstVertex) maxx = x;
 	if (y < miny || firstVertex) miny = y;

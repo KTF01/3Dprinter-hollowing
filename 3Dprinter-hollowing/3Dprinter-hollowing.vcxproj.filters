@@ -53,5 +53,8 @@
     <ClInclude Include="BoxTriOverlap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RayTriIntersect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

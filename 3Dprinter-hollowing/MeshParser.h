@@ -26,7 +26,7 @@ private:
 	bool processLine();
 	bool skipCommentLine();
 	void skipLine();
-	void updateMinMaxValues(float x, float y, float z);
+	void updateMinMaxValues(double x, double y, double z);
 
 	Mesh* mesh;
 	std::ifstream ifs;
