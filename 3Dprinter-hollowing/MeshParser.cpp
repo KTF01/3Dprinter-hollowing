@@ -52,7 +52,8 @@ bool MeshParser::processLine()
 			ifs >> iPosition0;
 			ifs >> iPosition1;
 			ifs >> iPosition2;
-			mesh->addIndex({iPosition0, iPosition1, iPosition2});
+			mesh->addFace({iPosition0, iPosition1, iPosition2});
+			
 		//}
 	}
 	else
@@ -90,6 +91,38 @@ void MeshParser::exportMesh(const Mesh& mesh, const char* filename) {
 	ofs.close();
 }
 
+
+void MeshParser::exportMeshSTL(Mesh* mesh, const char* fileName) {
+	/*std::ofstream ofs;
+	ofs.open(fileName);
+	ofs.write("solid obj\n", 10);
+	for (size_t i = 0; i < mesh->faces.size(); i++)
+	{
+		glm::vec<3, glm::vec<3, double>> triverts = mesh->getVertexesByFace(mesh->faces[i]);
+		glm::vec<3, double> normal = mesh->normals[i];
+
+		std::string facet = "facet normal "+ std::to_string(normal.x)+" "+ std::to_string(normal.y)+" "+ std::to_string(normal.z)+"\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+
+		facet = "\touter loop\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+
+		facet = "\t\tvertex "+ std::to_string(triverts[0].x)+ " " + std::to_string(triverts[0].y)+ " " + std::to_string(triverts[0].z)+"\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+		facet = "\t\tvertex " + std::to_string(triverts[1].x) + " " + std::to_string(triverts[1].y) + " " + std::to_string(triverts[1].z) + "\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+		facet = "\t\tvertex " + std::to_string(triverts[2].x) + " " + std::to_string(triverts[2].y) + " " + std::to_string(triverts[2].z) + "\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+
+		facet = "\tendloop\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+
+		facet = "endfacet\n";
+		ofs.write(facet.c_str(), strlen(facet.c_str()));
+	}
+	ofs.write("endsolid obj\n", 13);
+	ofs.close();*/
+}
 
 
 

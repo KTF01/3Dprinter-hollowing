@@ -18,7 +18,8 @@ Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg);
 bool isRhombusIntersect(Rhombus *r, Mesh* rabbit);
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh* rabbit, RhombusGrid& rg);
 //std::vector<Rhombus> splitToFourIfIntersect(Mesh* rabbit, RhombusGrid& rg);
-bool isRayIntersectTriangle(Rhombus* r, Mesh* rabbit);
+bool isRhombusInside(Rhombus* r, Mesh* rabbit);
+bool isRhombusOutsideBound(Rhombus* r, Mesh* rabbit);
 
 bool isSsmaller(Rhombus* a, Rhombus* b) {
 	return a->center.z < b->center.z;
@@ -30,10 +31,10 @@ double alpha = M_PI / 5.5;
 
 int main()
 {
-	Mesh* rabbit = MeshParser::parse("objs/bunny.obj");
+	Mesh* rabbit = MeshParser::parse("objs/abstract.obj");
 	std::cout << rabbit->center.x << " " << rabbit->center.y<<" " << rabbit->center.z << std::endl;
 	
-	double t = 0.001;
+	double t = 0.0005;
 	double hperw = tan((M_PI / 2.0) - alpha);
 	double w = 4 * rabbit->aabbX;
 	if ((4 * rabbit->aabbY) / hperw > w ) {
@@ -47,31 +48,35 @@ int main()
 
 	//rg.rhombuses = rg.splitRhombus(root);
 
+
+
 	rg.rhombuses = splitToFourIfIntersect(&rg.rhombuses[0], rabbit, rg);
 
-
-	for (unsigned int i = 0; i < rg.rhombuses.size(); i++) {
-		if (!rg.rhombuses[i].isBound && rg.rhombuses[i].center.z < 0) {
-			rg.removeRhombus(rg.rhombuses[i], -2);
+	/*for (unsigned int i = 0; i < rg.rhombuses.size(); i++) {
+		if (!isRhombusOutsideBound(&rg.rhombuses[i], rabbit)) {
 			if (isRayIntersectTriangle(&rg.rhombuses[i], rabbit)) {
-				rg.removeRhombus(rg.rhombuses[i], 1);
+					rg.removeRhombus(rg.rhombuses[i], 1);
 			}
-		}
-		else if (!rg.rhombuses[i].isBound &&rg.rhombuses[i].center.z > 0) {
-			//rg.removeRhombus(rg.rhombuses[i]);
-			if (isRayIntersectTriangle(&rg.rhombuses[i], rabbit)) {
-				rg.removeRhombus(rg.rhombuses[i], -1);
-			}
-		}
-	}
+		}*/
+	//	if (!rg.rhombuses[i].isBound && rg.rhombuses[i].center.z < 0) {
+	//		rg.removeRhombus(rg.rhombuses[i], -2);
+	//		/*if (isRayIntersectTriangle(&rg.rhombuses[i], rabbit)) {
+	//			rg.removeRhombus(rg.rhombuses[i], 1);
+	//		}*/
+	//	}
+	//	else if (!rg.rhombuses[i].isBound &&rg.rhombuses[i].center.z > 0) {
+	//		//rg.removeRhombus(rg.rhombuses[i]);
+	//		/*if (isRayIntersectTriangle(&rg.rhombuses[i], rabbit)) {
+	//			rg.removeRhombus(rg.rhombuses[i], -1);
+	//		}*/
+	//	}
+	//}
 
 
 	for (size_t i = 0; i < rg.rhombuses.size(); i++)
 	{
-		/*if (!rg.rhombuses[i].isBound) {
-			rg.removeRhombus(rg.rhombuses[i]);
-		}*/
-		mergeMeshes(rabbit, &rg.rhombuses[i]);
+
+		//mergeMeshes(rabbit, &rg.rhombuses[i]);
 	}
 
 
@@ -93,23 +98,32 @@ int main()
 
 	mergeMeshes(rabbit, aabbR);
 	MeshParser::exportMesh(*rabbit,"objs/output/test.obj");
+	//MeshParser::exportMeshSTL(rabbit,"objs/output/test.stl");
 	return 0;
 }
+
+bool isRhombusOutsideBound(Rhombus* r, Mesh* rabbit) {
+	if (r->center.x<rabbit->center.x - rabbit->aabbX || r->center.x > rabbit->center.x + rabbit->aabbX) return true;
+	if (r->center.y<rabbit->center.y - rabbit->aabbY || r->center.y > rabbit->center.y + rabbit->aabbY) return true;
+	if (r->center.z<rabbit->center.z - rabbit->aabbZ || r->center.z > rabbit->center.z + rabbit->aabbZ) return true;
+	return false;
+}
+
 
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGrid &rg) {
 	std::vector<Rhombus> finalGrid;
 	float rabbitHeight = 2*abs(rabbit->aabbY - rabbit->center.y);
 	if (r->height < rabbitHeight/4.0f) {
 		if (!isRhombusIntersect(r, rabbit)) {
-			rg.removeRhombus(*r);
-			finalGrid.push_back(*r);
+			if (!isRhombusOutsideBound(r, rabbit)) {
+				if (isRhombusInside(r, rabbit)) {
+					r->removeOutside();
+					finalGrid.push_back(*r);
+				}
+			}
 		}
 		else {
 			r->isBound = true;
-		}
-		if ((r->center.z-r->depth/2.0) < boundMinZ) {
-			boundMinZ = (r->center.z - r->depth / 2.0);
-			std::cout << boundMinZ << std::endl;
 		}
 		//finalGrid.push_back(*r); 
 		return finalGrid;
@@ -123,12 +137,12 @@ std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGri
 		}
 	}
 	else {
-		if ((r->center.z - r->depth / 2.0) < boundMinZ) {
-			boundMinZ = (r->center.z - r->depth / 2.0);
-			std::cout << boundMinZ << std::endl;
+		if (!isRhombusOutsideBound(r, rabbit)) {
+			if (isRhombusInside(r, rabbit)) {
+				r->removeOutside();
+				finalGrid.push_back(*r);
+			}
 		}
-		rg.removeRhombus(*r);
-		finalGrid.push_back(*r);
 	}
 	return finalGrid;
 }
@@ -152,7 +166,7 @@ Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg) {
 void mergeMeshes(Mesh* mesh1, Mesh* mesh2) {
 	for (unsigned int i = 0; i < mesh2->faces.size(); i++)
 	{
-		mesh1->addIndex(mesh2->faces[i]+mesh1->vertices.size());
+		mesh1->addFace(mesh2->faces[i]+mesh1->vertices.size());
 	}
 	
 	for (unsigned int i = 0; i < mesh2->vertices.size(); i++)
@@ -193,17 +207,24 @@ bool isRhombusIntersect(Rhombus* r, Mesh* rabbit) {
 	else return false;
 }
 
-bool isRayIntersectTriangle(Rhombus* r, Mesh* rabbit) {
+bool isRhombusInside(Rhombus* r, Mesh* rabbit) {
 	double boxCenter0 = r->center.x;
 	double boxCenter1 = r->center.y;
 	double boxCenter2 = r->center.z;
 
 
 	std::vector<int> counterVec;
+	std::vector<int> counterVec2;
+	std::vector<int> counterVec3;
 	counterVec.resize(rabbit->faces.size());
+	counterVec2.resize(rabbit->faces.size());
+	counterVec3.resize(rabbit->faces.size());
 	concurrency::array_view<Face, 1> f(rabbit->faces.size(), rabbit->faces);
 	concurrency::array_view<glm::vec<3, double>, 1> v(rabbit->vertices.size(), rabbit->vertices);
 	concurrency::array_view<int, 1> c(counterVec.size(), counterVec);
+	concurrency::array_view<int, 1> c2(counterVec2.size(), counterVec2);
+	concurrency::array_view<int, 1> c3(counterVec3.size(), counterVec3);
+
 	concurrency::parallel_for_each(f.extent, [=](concurrency::index<1> j) restrict(amp) {
 
 			double triverts[3][3] = {
@@ -212,22 +233,42 @@ bool isRayIntersectTriangle(Rhombus* r, Mesh* rabbit) {
 				{v[f[j].z - 1].x, v[f[j].z - 1].y, v[f[j].z - 1].z}
 			};
 			double boxCenter[3] = { boxCenter0,boxCenter1, boxCenter2 };
-			double rayDir[] = { 1,0, 0};
+			double rayDir[] = { 1,0, 0 };
+			double rayDir2[] = { 0,1, 0 };
+			double rayDir3[] = { 0,0, 1 };
 			double t, v, u;
 			int x = intersect_triangle3(boxCenter, rayDir, triverts[0], triverts[1], triverts[2], &t, &u, &v );
+			int y = intersect_triangle3(boxCenter, rayDir2, triverts[0], triverts[1], triverts[2], &t, &u, &v );
+			int z = intersect_triangle3(boxCenter, rayDir3, triverts[0], triverts[1], triverts[2], &t, &u, &v );
 			if (t<0.0) {
 				c[j]=x;
+				c2[j]=y;
+				c3[j]=z;
 			}
 		}
 	);
 	int count = 0;
+	int count2 = 0;
+	int count3 = 0;
 	for (unsigned int i = 0; i < counterVec.size(); i++)
 	{
 		count += c.data()[i];
+		count2 += c2.data()[i];
+		count3 += c3.data()[i];
 	}
 	//std::cout << "Utkozesek szama: " << count << std::endl;
+	int oddCount = 0;
 	
 	if (count % 2==1) {
+		oddCount++;
+	}
+	if (count2 % 2 == 1) {
+		oddCount++;
+	}
+	if (count3%2==1) {
+		oddCount++;
+	}
+	if (oddCount > 1) {
 		return true;
 	}
 	else return false;

@@ -10,6 +10,7 @@ public:
 	static Mesh* parse(const char* fileName);
 
 	static void exportMesh(const Mesh& mesh, const char* fileName);
+	static void exportMeshSTL(Mesh* mesh, const char* fileName);
 
 	enum Exception { EXC_FILENOTFOUND };
 private:
@@ -38,6 +39,6 @@ private:
 	unsigned int nIndexedVerts;
 	std::map<IndexedVert, unsigned int> vertexIndices;
 
-	float minx = 0, miny = 0, minz = 0, maxx = 0, maxy = 0, maxz = 0;
+	double minx = 0, miny = 0, minz = 0, maxx = 0, maxy = 0, maxz = 0;
 	bool firstVertex = true;
 };
