@@ -14,6 +14,7 @@
 #include "RayTriIntersect.h"
 
 void mergeMeshes(Mesh* mesh1, Mesh* mesh2);
+Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg);
 bool isRhombusIntersect(Rhombus *r, Mesh* rabbit);
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh* rabbit, RhombusGrid& rg);
 //std::vector<Rhombus> splitToFourIfIntersect(Mesh* rabbit, RhombusGrid& rg);
@@ -33,7 +34,7 @@ int main()
 	Mesh* rabbit = MeshParser::parse("objs/abstract.obj");
 	std::cout << rabbit->center.x << " " << rabbit->center.y<<" " << rabbit->center.z << std::endl;
 	
-	double t = 0.001;
+	double t = 0.0005;
 	double hperw = tan((M_PI / 2.0) - alpha);
 	double w = 4 * rabbit->aabbX;
 	if ((4 * rabbit->aabbY) / hperw > w ) {
@@ -75,11 +76,11 @@ int main()
 	for (size_t i = 0; i < rg.rhombuses.size(); i++)
 	{
 
-		mergeMeshes(rabbit, &rg.rhombuses[i]);
+		//mergeMeshes(rabbit, &rg.rhombuses[i]);
 	}
 
 
-	//Mesh* aabbR = new Mesh();
+	Mesh* aabbR = new Mesh();
 	/*aabbR->addVertex({rabbit->center.x+rabbit->aabbX,rabbit->center.y+rabbit->aabbY,rabbit->center.z+rabbit->aabbZ});
 	aabbR->addVertex({rabbit->center.x+rabbit->aabbX,rabbit->center.y+rabbit->aabbY,rabbit->center.z-rabbit->aabbZ});*/
 	/*aabbR->addVertex({rabbit->center.x+rabbit->aabbX,rabbit->center.y-rabbit->aabbY,rabbit->center.z+rabbit->aabbZ});
@@ -95,9 +96,9 @@ int main()
 	//aabbR->addIndex({2,6,5});
 	//aabbR->addIndex({5,2,3});
 
-	//mergeMeshes(rabbit, aabbR);
-	//MeshParser::exportMesh(*rabbit,"objs/output/test.obj");
-	MeshParser::exportMeshSTL(rabbit,"objs/output/abstract.stl");
+	mergeMeshes(rabbit, aabbR);
+	MeshParser::exportMesh(*rabbit,"objs/output/test.obj");
+	//MeshParser::exportMeshSTL(rabbit,"objs/output/test.stl");
 	return 0;
 }
 
@@ -112,7 +113,7 @@ bool isRhombusOutsideBound(Rhombus* r, Mesh* rabbit) {
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGrid &rg) {
 	std::vector<Rhombus> finalGrid;
 	float rabbitHeight = 2*abs(rabbit->aabbY - rabbit->center.y);
-	if (r->height < rabbitHeight/8.0f) {
+	if (r->height < rabbitHeight/4.0f) {
 		if (!isRhombusIntersect(r, rabbit)) {
 			if (!isRhombusOutsideBound(r, rabbit)) {
 				if (isRhombusInside(r, rabbit)) {
@@ -124,6 +125,7 @@ std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGri
 		else {
 			r->isBound = true;
 		}
+		//finalGrid.push_back(*r); 
 		return finalGrid;
 	}
 	if (isRhombusIntersect(r, rabbit)) {
@@ -145,12 +147,28 @@ std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGri
 	return finalGrid;
 }
 
+Rhombus* splitRhombus(Rhombus* rhombus, std::vector<Rhombus> rg) {
+	glm::vec3 c = rhombus->center;
+	Rhombus* r1 = new Rhombus(rhombus->height / 2.0f, rhombus->width/2.0f, c+glm::vec3(0, rhombus->height / 4.0f, 0));
+	Rhombus* r2 = new Rhombus(rhombus->height / 2.0f, rhombus->width/2.0f, c+glm::vec3(rhombus->width / 4.0f,0, 0));
+	Rhombus* r3 = new Rhombus(rhombus->height / 2.0f, rhombus->width/2.0f, c-glm::vec3(0, rhombus->height / 4.0f, 0));
+	Rhombus* r4 = new Rhombus(rhombus->height / 2.0f, rhombus->width/2.0f, c-glm::vec3(rhombus->width / 4.0f,0, 0));
+	mergeMeshes(r1, r2);
+	mergeMeshes(r1, r3);
+	mergeMeshes(r1, r4);
+	rg.push_back(*r1);
+	rg.push_back(*r2);
+	rg.push_back(*r3);
+	rg.push_back(*r4);
+	return r1;
+}
+
 void mergeMeshes(Mesh* mesh1, Mesh* mesh2) {
 	for (unsigned int i = 0; i < mesh2->faces.size(); i++)
 	{
 		mesh1->addFace(mesh2->faces[i]+mesh1->vertices.size());
-		mesh1->addNormal(mesh2->normals[i]);
 	}
+	
 	for (unsigned int i = 0; i < mesh2->vertices.size(); i++)
 	{
 		mesh1->addVertex(mesh2->vertices[i]);
@@ -222,7 +240,7 @@ bool isRhombusInside(Rhombus* r, Mesh* rabbit) {
 			int x = intersect_triangle3(boxCenter, rayDir, triverts[0], triverts[1], triverts[2], &t, &u, &v );
 			int y = intersect_triangle3(boxCenter, rayDir2, triverts[0], triverts[1], triverts[2], &t, &u, &v );
 			int z = intersect_triangle3(boxCenter, rayDir3, triverts[0], triverts[1], triverts[2], &t, &u, &v );
-			if (t<0.0) {
+			if (t>0.0) {
 				c[j]=x;
 				c2[j]=y;
 				c3[j]=z;
