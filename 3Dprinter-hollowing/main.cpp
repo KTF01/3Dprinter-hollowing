@@ -30,10 +30,10 @@ double alpha = M_PI / 5.5;
 
 int main()
 {
-	Mesh* rabbit = MeshParser::parse("objs/armadillo.obj");
+	Mesh* rabbit = MeshParser::parse("objs/abstract.obj");
 	std::cout << rabbit->center.x << " " << rabbit->center.y<<" " << rabbit->center.z << std::endl;
 	
-	double t = 0.5;
+	double t = 0.001;
 	double hperw = tan((M_PI / 2.0) - alpha);
 	double w = 4 * rabbit->aabbX;
 	if ((4 * rabbit->aabbY) / hperw > w ) {
@@ -97,7 +97,7 @@ int main()
 
 	//mergeMeshes(rabbit, aabbR);
 	//MeshParser::exportMesh(*rabbit,"objs/output/test.obj");
-	MeshParser::exportMeshSTL(rabbit,"objs/output/armadillo.stl");
+	MeshParser::exportMeshSTL(rabbit,"objs/output/abstract.stl");
 	return 0;
 }
 
@@ -112,7 +112,7 @@ bool isRhombusOutsideBound(Rhombus* r, Mesh* rabbit) {
 std::vector<Rhombus> splitToFourIfIntersect(Rhombus* r, Mesh *rabbit, RhombusGrid &rg) {
 	std::vector<Rhombus> finalGrid;
 	float rabbitHeight = 2*abs(rabbit->aabbY - rabbit->center.y);
-	if (r->height < rabbitHeight/16.0f) {
+	if (r->height < rabbitHeight/8.0f) {
 		if (!isRhombusIntersect(r, rabbit)) {
 			if (!isRhombusOutsideBound(r, rabbit)) {
 				if (isRhombusInside(r, rabbit)) {
