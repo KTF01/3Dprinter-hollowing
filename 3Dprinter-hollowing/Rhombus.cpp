@@ -28,6 +28,7 @@ Rhombus::Rhombus(double _height, double _width, glm::vec<3, double> _center, dou
 				r.faces[i] += 8;
 			}
 			faces.insert(faces.end(), r.faces.begin(), r.faces.end());
+			normals.insert(normals.end(), r.normals.begin(), r.normals.end());
 		}
 		
 	}
@@ -52,46 +53,71 @@ Rhombus::Rhombus() {
 
 void Rhombus::addIndexes() {
 		addFace({ 2,1,4 });
+		addNormal(Face{ 2,1,4 });
 		addFace({ 4,3,2 });
+		addNormal(Face{ 4,3,2 });
 
 		addFace({ 5,1,2 });
+		addNormal(Face{ 5,1,2 });
 		addFace({ 5,2,6 });
+		addNormal(Face{ 5,2,6 });
 
 		addFace({ 2,3,6 });
+		addNormal(Face{ 2,3,6 });
 		addFace({ 6,3,7 });
+		addNormal(Face{ 6,3,7 });
 
 		addFace({ 8, 7,3 });
+		addNormal(Face{ 8, 7,3 });
 		addFace({ 3, 4, 8 });
+		addNormal(Face{ 3, 4, 8 });
 
 		addFace({ 8, 4, 5 });
+		addNormal(Face{ 8, 4, 5 });
 		addFace({ 1,5, 4 });
+		addNormal(Face{ 1,5, 4 });
 
 		addFace({ 5,6,8 });
+		addNormal(Face{ 5,6,8 });
 		addFace({ 7,8,6 });
+		addNormal(Face{ 7,8,6 });
 }
 
 void Rhombus::addInvertedIndexes() {
 	addFace({ 1,2,4 });
+	addNormal(Face{ 1,2,4 });
 	addFace({ 3,4,2 });
+	addNormal(Face{ 3,4,2 });
 
 	addFace({ 1,5,2 });
+	addNormal(Face{ 1,5,2 });
 	addFace({ 2,5,6 });
+	addNormal(Face{ 2,5,6 });
 
 	addFace({ 3,2,6 });
+	addNormal(Face{ 3,2,6 });
 	addFace({ 3,6,7 });
+	addNormal(Face{ 3,6,7 });
 
 	addFace({ 7,8,3 });
+	addNormal(Face{ 7,8,3 });
 	addFace({ 4,3,8 });
+	addNormal(Face{ 4,3,8 });
 
 	addFace({ 4,8,5 });
+	addNormal(Face{ 4,8,5 });
 	addFace({ 5,1,4 });
+	addNormal(Face{ 5,1,4 });
 
 	addFace({ 6,5,8 });
+	addNormal(Face{ 6,5,8 });
 	addFace({ 8,7,6 });
+	addNormal(Face{ 8,7,6 });
 }
 
 void Rhombus::removeOutside() {
 	vertices.erase(vertices.begin(), vertices.begin()+8);
+	normals.erase(normals.begin(), normals.begin()+12);
 	faces.erase(faces.begin(), faces.begin()+12);
 	for (size_t i = 0; i < faces.size(); i++)
 	{

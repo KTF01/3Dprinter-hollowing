@@ -53,6 +53,7 @@ bool MeshParser::processLine()
 			ifs >> iPosition1;
 			ifs >> iPosition2;
 			mesh->addFace({iPosition0, iPosition1, iPosition2});
+			mesh->addNormal(Face{iPosition0, iPosition1, iPosition2});
 			
 		//}
 	}
@@ -93,7 +94,7 @@ void MeshParser::exportMesh(const Mesh& mesh, const char* filename) {
 
 
 void MeshParser::exportMeshSTL(Mesh* mesh, const char* fileName) {
-	/*std::ofstream ofs;
+	std::ofstream ofs;
 	ofs.open(fileName);
 	ofs.write("solid obj\n", 10);
 	for (size_t i = 0; i < mesh->faces.size(); i++)
@@ -121,7 +122,7 @@ void MeshParser::exportMeshSTL(Mesh* mesh, const char* fileName) {
 		ofs.write(facet.c_str(), strlen(facet.c_str()));
 	}
 	ofs.write("endsolid obj\n", 13);
-	ofs.close();*/
+	ofs.close();
 }
 
 
