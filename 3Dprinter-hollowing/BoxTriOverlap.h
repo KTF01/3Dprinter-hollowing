@@ -73,7 +73,7 @@ int planeBoxOverlap(double normal[3], double vert[3], double maxbox[3])restrict(
 
 }
 
-float myAbs(float a)restrict(amp)
+float myAbs(double a)restrict(amp)
 {
 	if (a >= 0) return a;
 	else return -a;

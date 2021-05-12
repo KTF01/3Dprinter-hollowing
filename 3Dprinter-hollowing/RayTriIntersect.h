@@ -218,7 +218,7 @@ int intersect_triangle2(double orig[3], double dir[3], double vert0[3], double v
 /* and one CROSS has been moved out from the if-else if-else */
 int intersect_triangle3(double orig[3], double dir[3], double vert0[3], double vert1[3], double vert2[3], double* t, double* u, double* v)restrict(amp)
 {
-    const double EPSILON = 0.00000000000000000000000000000000000001;
+    const double EPSILON = 0.000000000000000000000000001;
     double edge1[3], edge2[3], tvec[3], pvec[3], qvec[3];
     double det, inv_det;
 

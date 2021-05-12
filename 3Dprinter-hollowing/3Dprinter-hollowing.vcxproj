@@ -156,6 +156,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshParser.h" />
     <ClInclude Include="RhombusGrid.h" />
+    <ClInclude Include="triangleTriangleOverlap.h" />
     <ClInclude Include="Voxel.h" />
     <ClInclude Include="VoxelGrid.h" />
   </ItemGroup>
